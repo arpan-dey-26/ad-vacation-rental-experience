@@ -1,0 +1,136 @@
+/* ============================================================================
+   Booking rail — promo strip + booking card
+   ----------------------------------------------------------------------------
+   MEASURED: the card is 372px outer with a 1px border and 24px padding, giving
+   322px of content. The arithmetic that pinned all three at once: the Reserve
+   button measures x 882.5 w 322 at a 1339px viewport, and the rail's right edge
+   is the content right edge at 1229.5. 1229.5 − 372 = 857.5; 857.5 + 1 + 24 =
+   882.5, the measured button position. Confirmed again at 2005px.
+
+   BOOK-2 (sticky offset and range) is NOT measured: at scrollY 300 the card had
+   not engaged, which tells us only that its threshold is higher. So this rail
+   is NOT made sticky here — adding it would be an invented behaviour. The
+   wrapper exists so Phase 3 turns it on in one rule once measured.
+   ========================================================================== */
+
+.booking-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-block);
+  /* position: sticky deliberately omitted — BOOK-2 unmeasured. */
+}
+
+/* --- Promo strip --------------------------------------------------------- */
+
+.promo {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* [PROVISIONAL] */
+  padding: 16px; /* [PROVISIONAL] */
+  border: 1px solid var(--color-line); /* [PROVISIONAL] COL-2 */
+  border-radius: var(--radius-md); /* [PROVISIONAL] */
+}
+
+.promo__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* --- Booking card -------------------------------------------------------- */
+
+.booking-card {
+  box-sizing: border-box;
+  width: var(--size-booking-card);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md); /* [PROVISIONAL] BOOK-1b */
+  box-shadow: var(--shadow-card); /* [PROVISIONAL] BOOK-1b */
+  padding: var(--size-booking-padding);
+  background: var(--color-surface);
+}
+
+.booking-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px; /* [PROVISIONAL] */
+}
+
+.booking-card__amount {
+  font-size: var(--text-subsection);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* The date/guest summary. MEASURED as a labelled grid in the card; the picker
+   itself is the inline two-month calendar in the LEFT column (SEC-12), not
+   here. */
+.booking-card__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm); /* [PROVISIONAL] */
+  margin-block: var(--space-block);
+  overflow: hidden;
+}
+
+.booking-card__field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px; /* [PROVISIONAL] */
+  text-align: start;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.booking-card__field + .booking-card__field {
+  border-inline-start: 1px solid var(--color-line);
+}
+
+.booking-card__field--full {
+  grid-column: 1 / -1;
+  border-block-start: 1px solid var(--color-line);
+  border-inline-start: 0;
+}
+
+.booking-card__label {
+  font-size: var(--text-fine);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em; /* [PROVISIONAL] */
+}
+
+.booking-card__value {
+  font-size: var(--text-meta);
+  color: var(--color-ink-muted);
+}
+
+/* MEASURED: 322 × 48 — the card's full inner width. */
+.booking-card__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--size-cta-height);
+  border: 0;
+  border-radius: var(--radius-sm); /* [PROVISIONAL] */
+  background: var(--color-action); /* [PROVISIONAL] COL-4 */
+  color: var(--color-ink-inverse);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+/* The section nav reuses the CTA's appearance at content width rather than
+   filling its container. */
+.booking-card__cta--inline {
+  width: auto;
+  padding-inline: 20px; /* [PROVISIONAL] */
+  height: 40px; /* MEASURED: 92.8 × 40 in the section nav */
+}
+
+.booking-card__note {
+  margin: var(--space-block) 0 0;
+  text-align: center;
+  font-size: var(--text-meta);
+  color: var(--color-ink-muted);
+}

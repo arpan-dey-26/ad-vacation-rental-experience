@@ -1,0 +1,55 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+.idea/
+.vscode/
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env
+.env
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# submission artefacts
+/submission/
+*.zip
+
+# geometry harness build output
+scripts/verify-geometry/harness.html
+scripts/verify-geometry/harness.css
+scripts/verify-geometry/harness-app.html
+scripts/verify-geometry/harness-app.js
+
+.vercel
+
+# repository hygiene
+.env*
+*.key
+*.p12
+*.pfx
+*.log
+.cache/
+coverage/
+test-results/
+playwright-report/
+Thumbs.db

@@ -1,0 +1,117 @@
+/* ============================================================================
+   Dialog shell
+   ----------------------------------------------------------------------------
+   MEASURED from the amenities dialog, confirmed at two viewport widths:
+     780 × 1200, centred ((1339 − 780) / 2 = 279.5; (1990 − 780) / 2 = 605)
+     48px content inset — its h2 starts at x 327.5
+     close button 40 × 40 at (295.5, 68 + 12)
+   Colours, radius and shadow are unmeasured and use provisional tokens.
+   ========================================================================== */
+
+.dialog-layer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--color-surface-overlay); /* [PROVISIONAL] COL-5 */
+  opacity: 0.55; /* [PROVISIONAL] COL-5 */
+}
+
+.dialog {
+  position: relative;
+  z-index: var(--z-overlay-content);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg); /* [PROVISIONAL] */
+  box-shadow: var(--shadow-popover); /* [PROVISIONAL] */
+  overflow: hidden;
+}
+
+.dialog--panel {
+  width: var(--size-dialog); /* MEASURED: 780 */
+  max-width: calc(100vw - 2 * var(--space-section));
+  max-height: min(var(--size-dialog-max-height), calc(100vh - 2 * var(--space-section)));
+}
+
+/* Reserved for the photo tour and lightbox in Phases 4–5. */
+.dialog--full {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+}
+
+.dialog__bar {
+  display: flex;
+  align-items: center;
+  padding: var(--size-dialog-close-inset); /* MEASURED: 16 */
+  flex: 0 0 auto;
+}
+
+.dialog__close {
+  width: var(--size-control); /* MEASURED: 40 × 40 */
+  height: var(--size-control);
+  border-color: transparent;
+}
+
+.dialog__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding-inline: var(--size-dialog-inset); /* MEASURED: 48 */
+  padding-block-end: var(--size-dialog-inset);
+}
+
+.dialog__title {
+  /* MEASURED: the dialog's h2 line box is 31.5px — larger than the page's 26px.
+     The overlays do not reuse the page heading scale. */
+  font-size: var(--text-dialog-title);
+  line-height: var(--text-dialog-title--line-height);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-block);
+}
+
+.dialog__group {
+  border-block-start: 1px solid var(--color-line);
+  padding-block: var(--space-block);
+}
+
+.dialog__group:first-of-type {
+  border-block-start: 0;
+  padding-block-start: 0;
+}
+
+.dialog__group-title {
+  /* MEASURED: amenity group h3 line box is 25.7px. */
+  font-size: var(--text-subsection);
+  line-height: var(--text-group-title--line-height);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-stack);
+}
+
+.dialog__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog__list > li {
+  display: grid;
+  grid-template-columns: var(--size-highlight-indent) 1fr;
+  align-items: center;
+  padding-block: var(--space-block);
+  border-block-end: 1px solid var(--color-line);
+  font-size: var(--text-body);
+}
+
+.dialog__list > li:last-child {
+  border-block-end: 0;
+}

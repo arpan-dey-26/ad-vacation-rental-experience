@@ -1,0 +1,336 @@
+@import 'tailwindcss';
+
+/* Structural layers. Imported after Tailwind so our named rules win over
+   utilities of equal specificity, and kept in separate files so each one can be
+   read against the section of docs/12-measurements.md it implements. */
+@import '../styles/layout.css';
+@import '../styles/chrome.css';
+@import '../styles/gallery.css';
+@import '../styles/booking.css';
+@import '../styles/sections.css';
+@import '../styles/dialog.css';
+@import '../styles/tour.css';
+@import '../styles/lightbox.css';
+@import '../styles/calendar.css';
+
+/* ============================================================================
+   StayVista design tokens
+   ----------------------------------------------------------------------------
+   Every value here is an *implementation token* written by us. Values marked
+   [PROVISIONAL] are derived from the assignment screenshots and common desktop
+   conventions and MUST be confirmed against the live reference before the
+   fidelity gate — see docs/VERIFICATION-QUEUE.md.
+
+   Tailwind v4 reads this @theme block and generates the matching utilities,
+   so there is no tailwind.config.js. One source of truth, no drift.
+   ========================================================================== */
+
+/* `static` so every token is emitted to :root whether or not a Tailwind
+   utility happens to reference it — our structural CSS reads them directly
+   with var(), and tree-shaken tokens would silently resolve to nothing. */
+@theme static {
+  /* --- Typography ------------------------------------------------------- */
+  /* MEASURED: the reference serves "Airbnb Cereal VF" (variable, 200–900).
+     That face is proprietary. Per the R-3 decision we neither bundle nor
+     reference it: naming it in the stack would make the page render one way on
+     machines that happen to have it and another way everywhere else, which is
+     worse than a consistent substitute. Inter is the substitute — closest
+     freely-licensed metrics to Cereal's — and `--font-size-adjust` below tunes
+     it. See docs/11-risks.md R-3 and docs/measure/font-calibration.js. */
+  --font-sans:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+
+  /* Type ramp. Names describe role, not size, so a re-measure changes one line.
+     Provenance is per-value:
+
+       [MEASURED]   line-box heights, read from the captures at 1339px
+       [CALIBRATED] font sizes derived from a measured line box and a stated
+                    assumption — a heading's font-size sits at roughly
+                    0.85–0.88 of its line box in this class of layout, and it
+                    MUST be smaller than the line box or the text overflows it
+       [PROVISIONAL] no measured constraint at all
+
+     No font-size has been observed: every capture returned empty computed
+     styles (TYPE-2…TYPE-5). Nothing here claims otherwise. */
+  --text-display: 1.625rem; /* 26px — listing title          [CALIBRATED] */
+  --text-display--line-height: 30px; /* MEASURED: h1 line box */
+  --text-section: 1.375rem; /* 22px — section headings       [CALIBRATED] */
+  --text-section--line-height: 26px; /* MEASURED: h2 line box */
+  --text-subsection: 1.125rem; /* 18px — sub-headings        [CALIBRATED] */
+  --text-subsection--line-height: 25.7px; /* MEASURED: amenity h3 line box */
+  --text-body: 1rem; /* 16px — body copy               [PROVISIONAL] */
+  --text-body--line-height: 1.5rem;
+  --text-meta: 0.875rem; /* 14px — meta / captions         [PROVISIONAL] */
+  --text-meta--line-height: 1.25rem;
+  --text-fine: 0.75rem; /* 12px — fine print              [PROVISIONAL] */
+  --text-fine--line-height: 1rem;
+
+  /* Overlay headings do NOT reuse the page scale — measured line boxes differ:
+     page h2 26px, dialog h2 31.5px, photo-tour h2 22.9px, amenity h3 25.7px. */
+  --text-dialog-title: 1.625rem; /* 26px                       [CALIBRATED] */
+  --text-dialog-title--line-height: 31.5px; /* MEASURED */
+  --text-group-title--line-height: 25.7px; /* MEASURED */
+  /* The tour's own heading scale — MEASURED at 22.9px, smaller than the page's
+     26px h2 and much smaller than the amenities dialog's 31.5px. The three
+     surfaces do not share a heading size; each is measured separately. */
+  --text-tour-title: 1.25rem; /* 20px                          [CALIBRATED] */
+  --text-tour-title--line-height: 22.9px; /* MEASURED: tour h2 line box */
+  --text-tour-title--line-height: 22.9px; /* MEASURED (Phase 4) */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 800;
+
+  /* Substitute-font calibration. Inter's glyphs are not Cereal's, so the same
+     string sets at a different width; left uncorrected, every button, chip and
+     heading drifts and wrapping points move.
+
+     `--font-size-adjust` scales Inter so a reference string occupies the
+     measured width. It is 1 until calibrated: docs/measure/font-calibration.js
+     measures the reference's h1 and ours and returns the exact ratio. One
+     number, applied in one place. [UNCALIBRATED — queue TYPE-6] */
+  --font-size-adjust: 1;
+
+  /* --- Colour ----------------------------------------------------------- */
+  --color-ink: #222222; /* primary text                   [PROVISIONAL] */
+  --color-ink-muted: #6a6a6a; /* secondary text                 [PROVISIONAL] */
+  --color-ink-subtle: #717171; /* tertiary text / captions       [PROVISIONAL] */
+  --color-ink-inverse: #ffffff;
+
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #f7f7f7; /* skeletons, hover fills         [PROVISIONAL] */
+  --color-surface-overlay: #000000; /* photo-tour / lightbox backdrop [PROVISIONAL] */
+
+  --color-line: #dddddd; /* hairline dividers              [PROVISIONAL] */
+  --color-line-strong: #b0b0b0;
+
+  --color-brand: #ff385c; /* accent                         [PROVISIONAL] */
+  --color-brand-strong: #e00b41;
+  --color-action: #222222; /* primary button fill            [PROVISIONAL] */
+  --color-action-hover: #000000;
+  --color-focus: #222222; /* focus ring colour              [PROVISIONAL] */
+
+  /* --- Spacing scale (4px base) ----------------------------------------- */
+  --spacing: 0.25rem;
+
+  /* --- Radii ------------------------------------------------------------ */
+  /* HERO-3, BOOK-1b and the dialog radius are all open: no computed style was
+     ever captured. The whole scale is [PROVISIONAL] — a conventional 4/8/12/16
+     ramp — and Phase 3+ replaces the values without touching a component. */
+  --radius-xs: 4px; /* [PROVISIONAL] */
+  --radius-sm: 8px; /* [PROVISIONAL] */
+  --radius-md: 12px; /* [PROVISIONAL] */
+  --radius-lg: 16px; /* [PROVISIONAL] */
+  --radius-xl: 24px; /* [PROVISIONAL] */
+  --radius-pill: 999px; /* [PROVISIONAL] — a pill, not a measurement */
+
+  /* --- Elevation -------------------------------------------------------- */
+  --shadow-card: 0 6px 16px rgba(0, 0, 0, 0.12); /* booking card   [PROVISIONAL] */
+  --shadow-popover: 0 2px 16px rgba(0, 0, 0, 0.12); /* dialog       [PROVISIONAL] */
+  --shadow-control: 0 1px 2px rgba(0, 0, 0, 0.18); /* on photos     [PROVISIONAL] */
+
+  /* --- Motion ----------------------------------------------------------- */
+  /* Durations are deliberately short: the reference's motion is subtle. */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasised: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  --duration-instant: 90ms; /* hover tint, icon swap          [PROVISIONAL] */
+  --duration-fast: 150ms; /* image zoom, button press       [PROVISIONAL] */
+  --duration-medium: 250ms; /* lightbox crossfade             [PROVISIONAL] */
+  --duration-slow: 400ms; /* photo-tour overlay entrance    [PROVISIONAL] */
+
+  /* --- Layout ----------------------------------------------------------- */
+  /* All MEASURED at viewport 1339×1296 — see docs/12-measurements.md. The
+     content column resolves to 1120px at every viewport ≥1280, so it is fixed
+     across the whole desktop range this project targets. */
+  --container-shell: 1280px; /* MEASURED: outer max-width, centred     */
+  --container-page: 1120px; /* MEASURED: 1280 − 2 × 80 gutter        */
+  --container-gutter: 80px; /* MEASURED: shell side padding          */
+  --container-tour: 976px; /* MEASURED: photo-tour content width    */
+
+  --size-header: 89px; /* MEASURED: 88px + 1px hairline         */
+  --size-subnav: 67px; /* MEASURED: sticky section-nav bar      */
+  --size-gallery-gap: 8px; /* MEASURED: hero mosaic gap             */
+  --size-gallery-height: 494px; /* MEASURED: mosaic height at 1120 wide  */
+  --size-booking-card: 372px; /* MEASURED: incl. 1px border            */
+  --size-booking-padding: 24px; /* MEASURED: 372 − 2 − 48 = 322 inner    */
+  --size-content-column: 652px; /* MEASURED: left column                 */
+  --size-column-gap: 96px; /* MEASURED: 652 + 96 + 372 = 1120       */
+  --size-tour-photo-column: 458px; /* MEASURED: full-span photo width    */
+  --size-tour-gap: 12px; /* MEASURED: within a category           */
+  --size-tour-category-gap: 20px; /* MEASURED: between categories       */
+  --size-tour-thumb: 111.5px; /* MEASURED: category thumbnail width    */
+  --size-lightbox-image: 1100px; /* MEASURED at 1339px; cap unconfirmed  */
+  --size-control: 40px; /* MEASURED: overlay icon buttons        */
+
+  /* --- Measured component dimensions ------------------------------------ */
+  /* Each derived in docs/12-measurements.md; none of these is a guess. */
+  --size-header-inner: 1760px; /* MEASURED: header row max-width      */
+  --size-hero-major: 560px; /* MEASURED: large mosaic tile            */
+  --size-hero-minor: 272px; /* MEASURED: small mosaic tile            */
+  --size-hero-row: 243px; /* MEASURED: mosaic row height              */
+  --size-showall-width: 143.3px; /* MEASURED: "Show all photos"       */
+  --size-showall-height: 32px; /* MEASURED                            */
+  --size-showall-inset: 24px; /* MEASURED: from mosaic bottom-right   */
+  --size-sleep-card: 318px; /* MEASURED: "Where you'll sleep" card    */
+  --size-sleep-card-image: 212px; /* MEASURED: its image height       */
+  --size-sleep-gap: 16px; /* MEASURED: 109.5 + 318 + 16 = 443.5       */
+  --size-policy-column: 352px; /* MEASURED: "Things to know" column   */
+  --size-policy-gap: 32px; /* MEASURED: 3 × 352 + 2 × 32 = 1120       */
+  --size-avatar: 46px; /* MEASURED: host avatar                       */
+  --size-cta-height: 48px; /* MEASURED: Reserve button                */
+  --size-pill-height: 49px; /* MEASURED: "Show all N …" buttons       */
+  --size-action-height: 34px; /* MEASURED: Share / Save / Claim       */
+  --size-carousel-arrow: 32px; /* MEASURED: similar-stays arrows      */
+  --size-highlight-icon: 24px; /* MEASURED: highlight row icon        */
+  --size-highlight-indent: 48px; /* MEASURED: 157.5 − 109.5           */
+
+  /* --- Section rhythm ---------------------------------------------------- */
+  /* Phase 3 recovered three of these from the clean listing capture by
+     differencing adjacent element bounds — geometry the probe did record, even
+     though computed styles came back empty. Derivations in
+     docs/12-measurements.md § Vertical rhythm. */
+  --space-section: 48px; /* MEASURED: gallery bottom 667 → body top 715  */
+  --space-block: 24px; /* MEASURED: h2 bottom 1532.3 → content 1556.3    */
+  --space-stack: 6px; /* MEASURED: h2 bottom 741 → capacity row 747      */
+  --space-title-top: 32px; /* MEASURED: title section 89 → h1 121        */
+  --space-title-bottom: 22px; /* MEASURED: h1 bottom 151 → gallery 173   */
+  --space-section-rule: 32px; /* divider to next heading   [PROVISIONAL] */
+
+  /* --- Dialog ------------------------------------------------------------ */
+  --size-dialog: 780px; /* MEASURED: amenities dialog, centred at 2 widths */
+  --size-dialog-max-height: 1200px; /* MEASURED: its laid-out height       */
+  --size-dialog-inset: 48px; /* MEASURED: x 279.5 → h2 at x 327.5          */
+  --size-dialog-close-inset: 16px; /* MEASURED: 279.5,68 → close 295.5,80  */
+
+  /* --- Photo tour -------------------------------------------------------- */
+  /* Every size here was read from capture A (1339px) and confirmed unchanged in
+     capture H (2005px) — the tour's internals do not scale with the viewport.
+     Derivations in docs/12-measurements.md § Photo tour. */
+  --size-tour-content: 976px; /* MEASURED: = 8 × 111.5 + 7 × 12, fixed       */
+  --size-tour-column: 458px; /* MEASURED: photo column, right-aligned        */
+  --size-tour-photo-half: 223px; /* MEASURED: half-span photo                */
+  --size-tour-photo-gap: 12px; /* MEASURED: rows within a category           */
+  --size-tour-category-gap: 20px; /* MEASURED: between categories            */
+  --size-tour-nav-gap: 56px; /* MEASURED: strip bottom −4819.6 → photo −4763.6 */
+  --size-tour-thumb: 111.5px; /* MEASURED: thumbnail button width            */
+  --size-tour-thumb-image: 105.2px; /* MEASURED: thumbnail image height      */
+  --size-tour-thumb-gap: 12px; /* MEASURED: both axes, 8 per row             */
+  /* The thumbnail label block is MEASURED at 26px for one line and 44px for
+     two. One image→label gap plus n line boxes fits both exactly: 8 + 18 = 26
+     and 8 + 36 = 44. The split is [CALIBRATED] — the totals are measured, the
+     assumption is that the two-line case is the same gap with one more line. */
+  --size-tour-thumb-label-gap: 8px; /* [CALIBRATED] */
+  --size-tour-thumb-label-line: 18px; /* [CALIBRATED] */
+  /* Its own token, not --text-meta: the MEASURED 44px two-line case proves the
+     reference's label wraps "Additional photos" inside 111.5px, and ours does
+     not at this size. One measured font-size would fix that here alone.
+     Queue item TOUR-2b. */
+  --text-tour-label: 0.875rem; /* 14px                       [PROVISIONAL] */
+  /* Back (24,24,40,40) and the title (y 32.6, line box 22.9) both centre on
+     y 44, at both viewport widths. A header symmetric about that row is 88 tall
+     — MEASURED centres, [CALIBRATED] height. */
+  --size-tour-header: 88px; /* [CALIBRATED] */
+  --size-tour-control-inset: 24px; /* MEASURED: Back at x 24, y 24           */
+  --size-tour-actions-inset: 32px; /* MEASURED: Save right edge at vw − 32   */
+  --size-tour-actions-gap: 2px; /* MEASURED: Share ends vw−74, Save starts vw−72 */
+
+  /* --- Lightbox ---------------------------------------------------------- */
+  /* The image width is FIXED, not viewport-derived: 1100px at both captured
+     widths, for two different source aspects. The height is the source's own —
+     1100 × 617.2 for a 1440 × 808 photo, 1100 × 825 for a 1440 × 1080 one — so
+     only the width is capped, and `height: auto` reproduces both exactly.
+     Image and arrows are centred on the viewport (LIGHT-2, LIGHT-2b, LIGHT-3). */
+  --size-lightbox-image: 1100px; /* MEASURED: fixed cap, both widths        */
+  --size-lightbox-arrow-inset: 20px; /* MEASURED: x 20 and vw − 60          */
+  --size-lightbox-exit-inset: 16px; /* MEASURED: "Show all photos" at 16,16 */
+  --size-lightbox-close-inset: 24px; /* MEASURED: Close right edge at vw − 24 */
+  /* LIGHT-1 was never captured. This is the one number in the lightbox with no
+     evidence behind it at all, so it is named rather than buried. */
+  --opacity-viewer-backdrop: 0.92; /* [PROVISIONAL] LIGHT-1 */
+
+  /* --- Calendar ---------------------------------------------------------- */
+  /* SEC-12. MEASURED: the two-month grid spans the full 652px left column —
+     prev-month control at x 109.5, next-month at x 729.5 (32 × 32), "Clear
+     dates" at y 2678.2, so the block is roughly 300px tall. Day-cell metrics
+     are not measured. */
+  --size-calendar-nav: 32px; /* MEASURED */
+  --size-calendar-day: 40px; /* [PROVISIONAL] */
+  --size-calendar-gap: 48px; /* between the two months     [PROVISIONAL] */
+}
+
+/* --- z-index layers ------------------------------------------------------ */
+/* Kept as plain custom properties (not @theme) because they are consumed by
+   name in component styles, never as Tailwind utilities. */
+:root {
+  --z-base: 0;
+  --z-sticky-booking: 10;
+  --z-header: 20;
+  --z-overlay-backdrop: 100;
+  --z-overlay-content: 110;
+  --z-overlay-controls: 120;
+}
+
+/* --- Base ---------------------------------------------------------------- */
+html {
+  /* The overlays lock the body; a fixed scrollbar gutter stops the page from
+     shifting sideways when they open. */
+  scrollbar-gutter: stable;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Visible focus for keyboard users only — pointer users never see a ring. */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* Applied to <body> while an overlay owns the viewport. */
+body[data-scroll-locked='true'] {
+  overflow: hidden;
+}
+
+/* --- Reduced motion ------------------------------------------------------ */
+/* State changes still happen; they just arrive without travel. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Skip link: off-screen until it takes focus, then anchored top-left. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: var(--z-overlay-controls);
+}
+
+.skip-link:focus-visible {
+  left: 16px; /* [PROVISIONAL] — our own control, not a reference element */
+  top: 16px; /* [PROVISIONAL] */
+  padding: 12px 16px; /* [PROVISIONAL] */
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-popover);
+  font-size: var(--text-meta);
+  font-weight: var(--font-weight-semibold);
+}
+

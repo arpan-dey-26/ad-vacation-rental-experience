@@ -1,0 +1,248 @@
+/* ============================================================================
+   Photo tour
+   ----------------------------------------------------------------------------
+   MEASURED from capture A (viewport 1339) and confirmed unchanged in capture H
+   (viewport 2005) — every internal dimension is identical at both widths, and
+   every x shifts by exactly (2005 − 1339) / 2 = 333. The tour is a fixed 976px
+   block, centred; it does not scale.
+
+     content        976 wide  = 8 × 111.5 + 7 × 12
+     content left   (viewport − 15 − 976) / 2 — 174 at 1339, 507 at 2005
+     header centre  viewport / 2 — 669.5 at 1339, 1002.5 at 2005
+     photo column   458, right-aligned at the content edge
+     rows           full 458 × 305.3 · half 223 × 148.7 · both aspect 1.5
+     rhythm         12 within a category, 20 between
+
+   The two centres differ because the header sits OUTSIDE the scrolling region
+   and the scroller reserves a 15px gutter. That is reproduced structurally
+   below rather than with a hard-coded offset, so it holds at any scrollbar
+   width — `margin-inline: auto` inside a permanently-scrolling box IS the
+   measured rule.
+
+   Colour, radius, shadow and motion are unmeasured and use provisional tokens.
+   See docs/14-visual-fidelity-note.md § 3.
+   ========================================================================== */
+
+.tour {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay-content);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+}
+
+/* --- Header (pinned) ------------------------------------------------------ */
+/* TOUR-7, MEASURED: across internal scroll offsets of −4412, −5112 and −6213
+   the controls stay at viewport (24, 24). The header is outside the scroller,
+   so it does not move — no sticky positioning and no scroll listener. */
+
+.tour__header {
+  position: relative;
+  z-index: var(--z-overlay-controls);
+  flex: 0 0 auto;
+  height: var(--size-tour-header); /* [CALIBRATED] */
+}
+
+.tour__back {
+  position: absolute;
+  left: var(--size-tour-control-inset); /* MEASURED: x 24 */
+  top: var(--size-tour-control-inset); /* MEASURED: y 24 */
+  width: var(--size-control); /* MEASURED: 40 × 40 */
+  height: var(--size-control);
+}
+
+.tour__title {
+  /* Centred on the FULL header, not between the controls — MEASURED: the title
+     mid-point is exactly viewport / 2 at both captured widths, while the
+     content below centres on the scroller's narrower content box. */
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  text-align: center;
+  font-size: var(--text-tour-title); /* [CALIBRATED] from the line box */
+  line-height: var(--text-tour-title--line-height); /* MEASURED: 22.9 */
+  font-weight: var(--font-weight-semibold); /* [PROVISIONAL] */
+  /* A heading is not interactive; letting it span the header would otherwise
+     swallow clicks meant for Back, Share and Save. */
+  pointer-events: none;
+}
+
+.tour__actions {
+  position: absolute;
+  right: var(--size-tour-actions-inset); /* MEASURED: Save ends at vw − 32 */
+  top: var(--size-tour-control-inset); /* MEASURED: y 24 */
+  display: flex;
+  gap: var(--size-tour-actions-gap); /* MEASURED: 2 */
+}
+
+.tour__actions .icon-button {
+  width: var(--size-control); /* MEASURED: 40 × 40 */
+  height: var(--size-control);
+}
+
+/* --- Scrolling region ----------------------------------------------------- */
+
+.tour__scroller {
+  flex: 1 1 auto;
+  /* `scroll`, not `auto`: the reference's tour reserves a ~15px gutter at every
+     scroll position, which is what makes the content sit at 174 rather than
+     181.5 at 1339px. Reserving it unconditionally reproduces that, and keeps
+     the content from jumping sideways as the tour is scrolled. */
+  overflow-y: scroll;
+  overflow-x: hidden;
+  /* So a category scrolled to by the nav clears the pinned header. */
+  scroll-padding-block-start: var(--size-tour-header); /* [CALIBRATED] */
+  scroll-behavior: smooth;
+  /* Keeps the tour's own scroll extent from reaching the window. */
+  contain: paint;
+}
+
+.tour__content {
+  width: var(--size-tour-content); /* MEASURED: 976, fixed */
+  margin-inline: auto;
+  padding-block-end: var(--space-section); /* [PROVISIONAL] tail space */
+}
+
+/* --- Category strip ------------------------------------------------------- */
+
+.tour__nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  /* MEASURED: 8 per row. 8 × 111.5 + 7 × 12 = 976, so the strip and the content
+     block are the same measurement seen twice. */
+  grid-template-columns: repeat(8, var(--size-tour-thumb));
+  gap: var(--size-tour-thumb-gap); /* MEASURED: 12 both axes */
+  align-items: start;
+}
+
+.tour__thumb {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-tour-thumb-label-gap); /* [CALIBRATED] */
+  width: var(--size-tour-thumb); /* MEASURED: 111.5 */
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: start;
+  cursor: pointer;
+  color: inherit;
+}
+
+.tour__thumb-image {
+  display: block;
+  width: var(--size-tour-thumb); /* MEASURED: 111.5 */
+  height: var(--size-tour-thumb-image); /* MEASURED: 105.2 */
+  object-fit: cover;
+  border-radius: var(--radius-sm); /* [PROVISIONAL] */
+}
+
+.tour__thumb-label {
+  font-size: var(--text-tour-label); /* [PROVISIONAL] TOUR-2b */
+  line-height: var(--size-tour-thumb-label-line); /* [CALIBRATED] */
+  color: var(--color-ink-subtle); /* [PROVISIONAL] */
+}
+
+/* The active-category treatment is unmeasured — computed styles were never
+   captured. Restrained, and built from provisional tokens rather than invented:
+   the current category reads at full ink weight, the rest recede. */
+.tour__thumb[data-active='true'] .tour__thumb-label {
+  color: var(--color-ink); /* [PROVISIONAL] */
+  font-weight: var(--font-weight-semibold); /* [PROVISIONAL] */
+}
+
+.tour__thumb:hover .tour__thumb-image {
+  opacity: 0.88; /* [PROVISIONAL] HERO-6 — no hover state has been captured */
+  transition: opacity var(--duration-instant) ease; /* [PROVISIONAL] MOT-1 */
+}
+
+/* --- Category blocks ------------------------------------------------------ */
+
+.tour__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-tour-category-gap); /* MEASURED: 20 between categories */
+  margin-block-start: var(--size-tour-nav-gap); /* MEASURED: 56 */
+}
+
+.tour__category {
+  display: grid;
+  /* MEASURED: the column is 458 and right-aligned at the content edge, so the
+     rail takes the remaining 976 − 458 = 518. */
+  grid-template-columns: 1fr var(--size-tour-column);
+  align-items: start;
+}
+
+.tour__rail {
+  min-width: 0;
+  padding-inline-end: var(--space-section); /* [PROVISIONAL] rail gutter */
+}
+
+.tour__category-name {
+  margin: 0;
+  font-size: var(--text-subsection); /* [CALIBRATED] */
+  line-height: var(--text-subsection--line-height); /* MEASURED */
+  font-weight: var(--font-weight-semibold); /* [PROVISIONAL] */
+}
+
+.tour__features {
+  list-style: none;
+  margin: var(--space-stack) 0 0; /* MEASURED: 6 */
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--text-meta); /* [PROVISIONAL] */
+  color: var(--color-ink-subtle); /* [PROVISIONAL] */
+}
+
+/* Separators are generated, never typed into the data — the list stays a list
+   for assistive tech, and "·" is never read out as a word. */
+.tour__features > li + li::before {
+  content: '·';
+  padding-inline: var(--space-stack); /* MEASURED: 6 */
+}
+
+.tour__photos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-tour-photo-gap); /* MEASURED: 12 within a category */
+  min-width: 0;
+}
+
+.tour__row {
+  display: flex;
+  gap: var(--size-tour-photo-gap); /* MEASURED: 12 */
+}
+
+.tour__photo {
+  /* One full photo fills the 458 column; a pair splits it — (458 − 12) / 2 =
+     223, which is the MEASURED half width, so the pair needs no second token. */
+  flex: 1 1 0;
+  min-width: 0;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  /* MEASURED: 458 / 305.3 = 1.500 and 223 / 148.7 = 1.500. The aspect is the
+     measurement — the heights follow from it rather than being set twice. */
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-md); /* [PROVISIONAL] */
+}
+
+.tour__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tour__photo:hover .tour__image {
+  opacity: 0.92; /* [PROVISIONAL] HERO-6 */
+  transition: opacity var(--duration-instant) ease; /* [PROVISIONAL] MOT-1 */
+}

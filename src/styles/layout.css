@@ -1,0 +1,143 @@
+/* ============================================================================
+   Layout primitives
+   ----------------------------------------------------------------------------
+   The page nests two containers, both MEASURED at two viewport widths:
+
+       viewport
+       └── .shell     max-width 1280, centred
+           └── inner  1120 content (80px padding each side)
+
+   Because the shell caps at 1280 and the gutter is fixed, the content column
+   resolves to 1120px at every viewport ≥ 1280 — which is the entire desktop
+   range this project targets. See docs/12-measurements.md § Layout.
+
+   Structural geometry lives in these files rather than in Tailwind utility
+   strings for three reasons: the measured values (560/272/272, 96px, 372px)
+   would be arbitrary-value utilities anyway; a named rule is reviewable against
+   the measurement doc; and it keeps components free of magic numbers.
+   ========================================================================== */
+
+/* --- Reset ---------------------------------------------------------------- */
+/* Minimal and deliberate. `border-box` is load-bearing here: the shell caps at
+   1280 *including* its 80px gutters, and the header's 89px includes its 1px
+   hairline. Under the default `content-box` both are out by exactly the padding
+   and the border, which the geometry harness catches immediately. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+/* --- Shell --------------------------------------------------------------- */
+
+.shell {
+  max-width: var(--container-shell);
+  margin-inline: auto;
+  padding-inline: var(--container-gutter);
+}
+
+/* The header is NOT inside the shell. MEASURED: it is full-bleed with its own
+   wider inner cap — 1760px — and the same 80px padding. At 1339px the padding
+   binds (1339 − 160 = 1179); at 1990px the cap binds and the margins become
+   115px. Both were measured. */
+.shell--header {
+  max-width: var(--size-header-inner);
+  margin-inline: auto;
+  padding-inline: var(--container-gutter);
+}
+
+/* --- Two-column body ----------------------------------------------------- */
+/* MEASURED: 652 + 96 + 372 = 1120. Fixed track widths, not fractions: the
+   booking rail is a fixed 372 and the content column takes the remainder, and
+   expressing that as `1fr auto` would be a different rule that happens to
+   agree at one width. */
+
+.listing-body {
+  display: grid;
+  grid-template-columns: var(--size-content-column) var(--size-booking-card);
+  column-gap: var(--size-column-gap);
+  align-items: start;
+}
+
+/* Grid items default to `min-width: auto`, which lets a wide child — the
+   similar-stays scroller, the review-tag row — push its track wider than the
+   grid and blow out the whole page horizontally. Pinning every direct child to
+   `min-width: 0` is the fix, and it is applied here once rather than
+   rediscovered per section. */
+.listing-body > * {
+  min-width: 0;
+}
+
+/* --- Section rhythm ------------------------------------------------------ */
+/* Vertical rhythm is LAY-4 and still unmeasured. These are provisional tokens,
+   applied in one place so Phase 3 calibrates by editing globals.css. */
+
+.section {
+  padding-block: var(--space-section);
+}
+
+.section--ruled {
+  border-top: 1px solid var(--color-line);
+}
+
+.section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-block);
+}
+
+.section__header .section__heading {
+  margin-bottom: 0;
+}
+
+.section__heading {
+  font-size: var(--text-section);
+  line-height: var(--text-section--line-height);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-block);
+}
+
+/* A section that spans the full 1120 rather than sitting in the left column. */
+.section--wide {
+  grid-column: 1 / -1;
+}
+
+/* --- Generic stacks ------------------------------------------------------ */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.rating,
+.rating__visual {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* --- Accessibility helper ------------------------------------------------ */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}

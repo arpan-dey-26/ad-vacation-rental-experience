@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reference Production Architecture — Vacation Rental Marketplace</title>
+    <style>
+      /* ----------------------------------------------------------------------
+         EDITABLE SOURCE for docs/architecture.png and docs/architecture.pdf.
+
+         Rendered by scripts/build-architecture.mjs with the Chromium that is
+         already in the toolchain — no diagramming dependency is added to the
+         project. Edit this file and re-run `npm run docs:architecture`.
+         -------------------------------------------------------------------- */
+      :root {
+        --ink: #1b1b1f;
+        --ink-soft: #55555f;
+        --ink-faint: #8a8a95;
+        --rule: #d8d8e0;
+        --page: #ffffff;
+        --band: #f6f6f9;
+        --client: #e8effa;
+        --client-line: #7da2dd;
+        --edge: #eaf3ee;
+        --edge-line: #79ad90;
+        --service: #f2eefa;
+        --service-line: #9d8cc4;
+        --data: #fdf0e6;
+        --data-line: #d79a62;
+        --async: #fdecef;
+        --async-line: #d4808f;
+        --external: #eef0f2;
+        --external-line: #9aa3ad;
+        --built: #1b7f5a;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        width: 1720px;
+        background: var(--page);
+        color: var(--ink);
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .sheet { padding: 44px 48px 40px; }
+
+      /* --- Masthead --------------------------------------------------- */
+      .masthead {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 2px solid var(--ink);
+        padding-bottom: 16px;
+      }
+
+      h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: -0.2px; }
+
+      .masthead p { margin: 0; color: var(--ink-soft); font-size: 14px; max-width: 900px; }
+
+      .meta { text-align: right; font-size: 12px; color: var(--ink-faint); line-height: 1.6; }
+
+      /* --- Scope banner ------------------------------------------------ */
+      .scope {
+        margin: 20px 0 26px;
+        border: 1.5px solid var(--built);
+        border-radius: 8px;
+        padding: 14px 18px;
+        display: flex;
+        gap: 18px;
+        align-items: flex-start;
+        background: #f2faf6;
+      }
+
+      .scope__tag {
+        flex: 0 0 auto;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.9px;
+        text-transform: uppercase;
+        color: var(--built);
+        border: 1.5px solid var(--built);
+        border-radius: 4px;
+        padding: 4px 8px;
+        white-space: nowrap;
+      }
+
+      .scope p { margin: 0; font-size: 13.5px; line-height: 1.65; color: var(--ink); }
+
+      .scope strong { font-weight: 700; }
+
+      /* --- Bands -------------------------------------------------------- */
+      .band {
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        background: var(--band);
+        padding: 14px 16px 16px;
+        margin-bottom: 10px;
+      }
+
+      .band__title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin: 0 0 12px;
+      }
+
+      .row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+      .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+      .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+      .grid-7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+
+      /* --- Nodes -------------------------------------------------------- */
+      .node {
+        border: 1.5px solid var(--external-line);
+        background: var(--external);
+        border-radius: 7px;
+        padding: 10px 12px;
+        min-height: 62px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .node__name { font-size: 13.5px; font-weight: 600; line-height: 1.25; }
+
+      .node__note { font-size: 11px; color: var(--ink-soft); margin-top: 3px; line-height: 1.35; }
+
+      .node--client { background: var(--client); border-color: var(--client-line); }
+      .node--edge { background: var(--edge); border-color: var(--edge-line); }
+      .node--service { background: var(--service); border-color: var(--service-line); }
+      .node--data { background: var(--data); border-color: var(--data-line); }
+      .node--async { background: var(--async); border-color: var(--async-line); }
+
+      /* The one thing that actually exists in this repository. */
+      .node--built {
+        border: 2.5px solid var(--built);
+        box-shadow: 0 0 0 3px rgba(27, 127, 90, 0.12);
+      }
+
+      .built-tag {
+        display: inline-block;
+        margin-top: 5px;
+        font-size: 9.5px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--built);
+      }
+
+      /* --- Flow arrows -------------------------------------------------- */
+      .flow {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin: 2px 0 8px;
+        color: var(--ink-faint);
+        font-size: 11px;
+        letter-spacing: 0.6px;
+      }
+
+      .flow::before,
+      .flow::after {
+        content: '';
+        height: 1px;
+        background: var(--rule);
+        flex: 1 1 auto;
+      }
+
+      .arrow { font-size: 15px; color: var(--ink-soft); }
+
+      /* --- Split columns ------------------------------------------------ */
+      .split { display: grid; grid-template-columns: 1.35fr 1fr; gap: 10px; }
+
+      .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+      /* --- Flow legend --------------------------------------------------- */
+      .legend {
+        margin-top: 18px;
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        padding: 16px 18px;
+      }
+
+      .legend h2 {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin: 0 0 12px;
+      }
+
+      .legend ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 40px; }
+
+      .legend li { font-size: 12.5px; line-height: 1.75; margin-bottom: 8px; break-inside: avoid; }
+
+      .legend b { font-weight: 700; }
+
+      .legend code {
+        font-family: 'SF Mono', Menlo, Consolas, monospace;
+        font-size: 11.5px;
+        color: var(--ink-soft);
+      }
+
+      footer {
+        margin-top: 18px;
+        padding-top: 12px;
+        border-top: 1px solid var(--rule);
+        font-size: 11.5px;
+        color: var(--ink-faint);
+        display: flex;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sheet">
+      <div class="masthead">
+        <div>
+          <h1>Reference Production Architecture — Vacation Rental Marketplace</h1>
+          <p>
+            The system a listing experience of this kind would sit inside at
+            marketplace scale. This is a design reference, not a description of
+            the StayVista repository.
+          </p>
+        </div>
+        <div class="meta">
+          StayVista — Airbnb Listing Experience Clone<br />
+          Requirement H9 · September 2026<br />
+          Source: <code>docs/architecture/architecture.html</code>
+        </div>
+      </div>
+
+      <div class="scope">
+        <span class="scope__tag">Scope</span>
+        <p>
+          <strong>Everything on this page is a recommendation except one box.</strong>
+          StayVista as submitted is a desktop front end with a frontend-held data
+          layer and no backend at all — the single node outlined in green. It
+          implements no service, database, queue or integration shown here. The
+          diagram answers the assignment's request for a production-scale
+          architecture; it does not claim the clone implements it. Flows are
+          explained in <strong>docs/15-production-architecture.md</strong>.
+        </p>
+      </div>
+
+      <div class="band">
+        <p class="band__title">Clients</p>
+        <div class="grid-4">
+          <div class="node node--client node--built">
+            <span class="node__name">Web — desktop</span>
+            <span class="node__note">Server-rendered listing page, photo tour, lightbox</span>
+            <span class="built-tag">Built in this repository</span>
+          </div>
+          <div class="node node--client">
+            <span class="node__name">Web — mobile</span>
+            <span class="node__note">Out of scope: desktop-only brief (F1)</span>
+          </div>
+          <div class="node node--client">
+            <span class="node__name">Native apps</span>
+            <span class="node__note">iOS / Android, same public API</span>
+          </div>
+          <div class="node node--client">
+            <span class="node__name">Admin &amp; operations</span>
+            <span class="node__note">Moderation, support, finance tooling</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow"><span class="arrow">&#9660;</span> HTTPS</div>
+
+      <div class="band">
+        <p class="band__title">Edge</p>
+        <div class="grid-4">
+          <div class="node node--edge">
+            <span class="node__name">DNS</span>
+            <span class="node__note">Anycast, health-checked failover</span>
+          </div>
+          <div class="node node--edge">
+            <span class="node__name">CDN</span>
+            <span class="node__note">Static assets and images; cache keys by variant</span>
+          </div>
+          <div class="node node--edge">
+            <span class="node__name">WAF &amp; DDoS</span>
+            <span class="node__note">Rule sets, bot mitigation, IP reputation</span>
+          </div>
+          <div class="node node--edge">
+            <span class="node__name">Load balancer &amp; API gateway</span>
+            <span class="node__note">TLS termination, routing, authn, rate limiting</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow"><span class="arrow">&#9660;</span> internal, mutually authenticated</div>
+
+      <div class="band">
+        <p class="band__title">Application services — stateless, horizontally scaled</p>
+        <div class="grid-7">
+          <div class="node node--service">
+            <span class="node__name">Listing</span>
+            <span class="node__note">Listing read/write, media references</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Search</span>
+            <span class="node__note">Query, filter, rank, paginate</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Availability</span>
+            <span class="node__note">Calendars, blocks, minimum stay</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Booking</span>
+            <span class="node__note">Reservation lifecycle, idempotent</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Pricing</span>
+            <span class="node__note">Base, seasonal, fees, taxes, promos</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Payment</span>
+            <span class="node__note">Authorise, capture, refund, payout</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">User &amp; auth</span>
+            <span class="node__note">Identity, sessions, roles</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Review</span>
+            <span class="node__note">Submission, moderation, aggregation</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Media</span>
+            <span class="node__note">Upload, transcode, derivative variants</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Notification</span>
+            <span class="node__note">Templating, preferences, delivery</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Recommendation</span>
+            <span class="node__note">Similar stays, ranking signals</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Host</span>
+            <span class="node__note">Onboarding, calendar, payouts</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Admin &amp; moderation</span>
+            <span class="node__note">Policy enforcement, takedowns</span>
+          </div>
+          <div class="node node--service">
+            <span class="node__name">Geo</span>
+            <span class="node__note">Geocoding cache, map tile proxy</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow"><span class="arrow">&#9660;</span> synchronous reads and writes &nbsp;·&nbsp; <span class="arrow">&#9654;</span> published events</div>
+
+      <div class="split">
+        <div class="band">
+          <p class="band__title">Data</p>
+          <div class="grid-4">
+            <div class="node node--data">
+              <span class="node__name">Primary relational DB</span>
+              <span class="node__note">Per-service schemas; bookings strongly consistent</span>
+            </div>
+            <div class="node node--data">
+              <span class="node__name">Read replicas</span>
+              <span class="node__note">Listing and review reads; replica lag budgeted</span>
+            </div>
+            <div class="node node--data">
+              <span class="node__name">Cache</span>
+              <span class="node__note">Hot listings, pricing, session data; TTL + event bust</span>
+            </div>
+            <div class="node node--data">
+              <span class="node__name">Search index</span>
+              <span class="node__note">Denormalised documents, rebuilt from events</span>
+            </div>
+            <div class="node node--data">
+              <span class="node__name">Object storage</span>
+              <span class="node__note">Originals and derivatives; CDN origin</span>
+            </div>
+            <div class="node node--data">
+              <span class="node__name">Analytics / event store</span>
+              <span class="node__note">Append-only; warehouse and ML features</span>
+            </div>
+            <div class="node node--data">
+              <span class="node__name">Availability store</span>
+              <span class="node__note">Calendar state with transactional holds</span>
+            </div>
+            <div class="node node--data">
+              <span class="node__name">Backups &amp; PITR</span>
+              <span class="node__note">Cross-region, restore-tested</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="band">
+          <p class="band__title">Asynchronous processing</p>
+          <div class="grid-4" style="grid-template-columns: repeat(2, 1fr)">
+            <div class="node node--async">
+              <span class="node__name">Message broker / event bus</span>
+              <span class="node__note">Durable topics, consumer groups, DLQs</span>
+            </div>
+            <div class="node node--async">
+              <span class="node__name">Background workers</span>
+              <span class="node__note">Retries with backoff; idempotent handlers</span>
+            </div>
+            <div class="node node--async">
+              <span class="node__name">Search indexing pipeline</span>
+              <span class="node__note">Listing and review events to index</span>
+            </div>
+            <div class="node node--async">
+              <span class="node__name">Notification processing</span>
+              <span class="node__note">Fan-out, batching, quiet hours</span>
+            </div>
+            <div class="node node--async">
+              <span class="node__name">Media processing</span>
+              <span class="node__note">Resize, compress, derivative generation</span>
+            </div>
+            <div class="node node--async">
+              <span class="node__name">Recommendation pipeline</span>
+              <span class="node__note">Feature build, offline scoring</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="band">
+          <p class="band__title">External systems</p>
+          <div class="grid-4" style="grid-template-columns: repeat(2, 1fr)">
+            <div class="node">
+              <span class="node__name">Payment provider</span>
+              <span class="node__note">PSP; card data never touches our systems</span>
+            </div>
+            <div class="node">
+              <span class="node__name">Maps &amp; geocoding</span>
+              <span class="node__note">Tiles, forward and reverse geocoding</span>
+            </div>
+            <div class="node">
+              <span class="node__name">Email / SMS / push</span>
+              <span class="node__note">Transactional delivery, webhooks for status</span>
+            </div>
+            <div class="node">
+              <span class="node__name">Identity provider</span>
+              <span class="node__note">Social and enterprise sign-in (OIDC)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns" style="gap: 10px">
+          <div class="band">
+            <p class="band__title">Observability</p>
+            <div style="display: grid; gap: 10px">
+              <div class="node">
+                <span class="node__name">Logs</span>
+                <span class="node__note">Structured, correlation id per request</span>
+              </div>
+              <div class="node">
+                <span class="node__name">Metrics &amp; traces</span>
+                <span class="node__note">RED/USE dashboards; distributed tracing</span>
+              </div>
+              <div class="node">
+                <span class="node__name">Alerting &amp; SLOs</span>
+                <span class="node__note">Error budgets, paging, runbooks</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="band">
+            <p class="band__title">Security</p>
+            <div style="display: grid; gap: 10px">
+              <div class="node">
+                <span class="node__name">IAM &amp; authorisation</span>
+                <span class="node__note">Least privilege, per-service identity</span>
+              </div>
+              <div class="node">
+                <span class="node__name">Secrets &amp; encryption</span>
+                <span class="node__note">Managed secrets, TLS in transit, KMS at rest</span>
+              </div>
+              <div class="node">
+                <span class="node__name">Rate limiting &amp; audit</span>
+                <span class="node__note">Per-principal quotas; immutable audit log</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <h2>Principal flows — detailed in docs/15-production-architecture.md</h2>
+        <ol>
+          <li>
+            <b>Browse / search.</b> Client &rarr; CDN/WAF &rarr; API gateway &rarr;
+            Search &rarr; search index &rarr; Listing &rarr; cache, then replica on
+            miss &rarr; response. Cache and index absorb read traffic; the primary
+            database is not on this path.
+          </li>
+          <li>
+            <b>Listing photos.</b> Client &rarr; CDN &rarr; object storage on miss.
+            Images never transit an application service. <code>StayVista links to
+            the reference origin at runtime and packages nothing.</code>
+          </li>
+          <li>
+            <b>Booking.</b> Client &rarr; gateway &rarr; Booking &rarr; Availability
+            (transactional hold) &rarr; Pricing &rarr; Payment &rarr; PSP &rarr;
+            booking database &rarr; event bus &rarr; notifications. Idempotency keys
+            make a retried request safe; the hold is what prevents double-selling.
+          </li>
+          <li>
+            <b>Host listing update.</b> Host &rarr; Host/Admin &rarr; Listing &rarr;
+            database &rarr; event bus &rarr; search re-index and media processing
+            &rarr; CDN invalidation. Search is eventually consistent by design.
+          </li>
+          <li>
+            <b>Reviews.</b> Guest &rarr; Review &rarr; moderation &rarr; database
+            &rarr; event pipeline &rarr; rating aggregates on the listing. Aggregates
+            are recomputed asynchronously, never in the write path.
+          </li>
+        </ol>
+      </div>
+
+      <footer>
+        <span
+          >Green outline = implemented in the submitted repository. Everything
+          else is design guidance.</span
+        >
+        <span>StayVista · Reference production architecture · v1</span>
+      </footer>
+    </div>
+  </body>
+</html>

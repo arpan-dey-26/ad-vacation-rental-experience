@@ -1,0 +1,95 @@
+/* ============================================================================
+   Hero gallery mosaic
+   ----------------------------------------------------------------------------
+   MEASURED, and confirmed identical at two viewport widths:
+
+       total   1120 × 494
+       columns 560 / 272 / 272
+       rows    243 / 243
+       gap     8 (both axes)
+       tile 1  spans both rows
+
+   The column ratio is expressed as 35fr 17fr 17fr, which reproduces
+   560/272/272 exactly at 1120 (tracks = 1120 − 16 = 1104; 1104 × 35/69 = 560,
+   1104 × 17/69 = 272) and degrades proportionally if the content column ever
+   changes. The 494px height is fixed, not aspect-derived — measured identical
+   at 1339px and 2005px.
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 35fr 17fr 17fr;
+  grid-template-rows: var(--size-hero-row) var(--size-hero-row);
+  gap: var(--size-gallery-gap);
+  height: var(--size-gallery-height);
+}
+
+.hero__tile {
+  /* Reset the button so only the image shows. */
+  position: relative;
+  display: block;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: var(--color-surface-sunken);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.hero__tile--major {
+  grid-row: span 2;
+}
+
+/* HERO-3 (corner radii) is still unmeasured — the capture returned no computed
+   styles. The outer corners are rounded here because the reference screenshot
+   shows rounding on the mosaic's outer edge and none on the inner seams, but
+   the RADIUS VALUE is provisional and lives on a token. */
+.hero__tile:first-child {
+  border-start-start-radius: var(--radius-md); /* [PROVISIONAL] HERO-3 */
+  border-end-start-radius: var(--radius-md);
+}
+
+.hero__tile:nth-child(3) {
+  border-start-end-radius: var(--radius-md); /* [PROVISIONAL] HERO-3 */
+}
+
+.hero__tile:last-child {
+  border-end-end-radius: var(--radius-md); /* [PROVISIONAL] HERO-3 */
+}
+
+.hero__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Every tile is a fixed box and every photo is 4:3 or 16:9, so cover is the
+     only fit that never letterboxes. */
+}
+
+/* HERO-6 (hover treatment) is unmeasured. No hover transform or filter is
+   applied here on purpose: inventing one is as much a deviation as missing the
+   real one. Phase 3 adds it once a forced-:hover capture exists. */
+
+/* --- "Show all photos" --------------------------------------------------- */
+/* MEASURED: 143.3 × 32, inset 24px from the mosaic's bottom-right corner. Fill,
+   radius, border and shadow are not measured and use provisional tokens. */
+
+.hero__show-all {
+  position: absolute;
+  inset-block-end: var(--size-showall-inset);
+  inset-inline-end: var(--size-showall-inset);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-stack);
+  min-width: var(--size-showall-width);
+  height: var(--size-showall-height);
+  padding-inline: 12px; /* [PROVISIONAL] */
+  border: 1px solid var(--color-ink); /* [PROVISIONAL] COL-4 */
+  border-radius: var(--radius-sm); /* [PROVISIONAL] */
+  background: var(--color-surface); /* [PROVISIONAL] COL-4 */
+  color: var(--color-ink);
+  font-size: var(--text-fine);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}

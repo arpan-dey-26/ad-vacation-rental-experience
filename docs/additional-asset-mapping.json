@@ -1,0 +1,69 @@
+{
+  "sourceZip": "Other photo.zip",
+  "suppliedCount": 8,
+  "host": {
+    "source": "imgdownloader-c51f7302.jpeg",
+    "local": "/images/mirashya-homes-logo.jpeg"
+  },
+  "map": {
+    "source": "IMG-20260925-WA0007.jpg",
+    "local": "/images/candolim-map.jpg"
+  },
+  "nearby": [
+    {
+      "id": "s1",
+      "source": "imgdownloader-bd5efc3b.jpeg",
+      "local": "/images/nearby-s1.jpeg",
+      "mappingBasis": "ZIP order and visible content; exact title association not independently confirmed"
+    },
+    {
+      "id": "s2",
+      "source": "imgdownloader-f1c71592.jpeg",
+      "local": "/images/nearby-s2.jpeg",
+      "mappingBasis": "ZIP order and visible content; exact title association not independently confirmed"
+    },
+    {
+      "id": "s3",
+      "source": "imgdownloader-f7588bc9.jpeg",
+      "local": "/images/nearby-s3.jpeg",
+      "mappingBasis": "ZIP order and visible content; exact title association not independently confirmed"
+    },
+    {
+      "id": "s4",
+      "source": "imgdownloader-fcca6575 (1).jpeg",
+      "local": "/images/nearby-s4.jpeg",
+      "mappingBasis": "ZIP order and visible content; exact title association not independently confirmed"
+    },
+    {
+      "id": "s5",
+      "source": "imgdownloader-58533b14.jpeg",
+      "local": "/images/nearby-s5.jpeg",
+      "mappingBasis": "ZIP order and visible content; exact title association not independently confirmed"
+    },
+    {
+      "id": "s6",
+      "source": "2579775257_WxH.jpg",
+      "local": "/images/nearby-s6.jpeg",
+      "mappingBasis": "ZIP order and visible content; exact title association not independently confirmed"
+    },
+    {
+      "id": "s7",
+      "source": "imgdownloader-f1c71592.jpeg",
+      "local": "/images/nearby-s2.jpeg",
+      "mappingBasis": "Saved reference capture reuses s2"
+    },
+    {
+      "id": "s8",
+      "source": "imgdownloader-fcca6575 (1).jpeg",
+      "local": "/images/nearby-s4.jpeg",
+      "mappingBasis": "Saved reference capture reuses s4"
+    }
+  ],
+  "sleeping": {
+    "sourceZip": "Hotel photo.zip",
+    "bedroom": "p13",
+    "livingRoom": "p01"
+  },
+  "syntheticCoHosts": 8,
+  "syntheticReviewers": 6
+}

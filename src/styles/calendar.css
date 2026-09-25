@@ -1,0 +1,85 @@
+/* ============================================================================
+   Stay calendar (SEC-12)
+   ----------------------------------------------------------------------------
+   MEASURED: the block spans the full 652px left column — prev-month control at
+   the content edge, next-month at x 729.5, both 32 × 32 — with "Clear dates"
+   below. Day-cell metrics were not captured, so cell sizing is provisional.
+   ========================================================================== */
+
+.calendar {
+  position: relative;
+}
+
+/* The two nav controls sit at the outer edges of the column, which is what puts
+   the next-month control at x 729.5 in the capture. */
+.calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--space-block);
+}
+
+.calendar__months {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--size-calendar-gap); /* [PROVISIONAL] */
+}
+
+.calendar__month-label {
+  margin: 0 0 var(--space-block);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+}
+
+.calendar__weekdays,
+.calendar__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar__weekdays {
+  font-size: var(--text-fine);
+  color: var(--color-ink-subtle);
+  text-align: center;
+  margin-block-end: var(--space-stack);
+}
+
+.calendar__pad {
+  aspect-ratio: 1;
+}
+
+.calendar__day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-pill); /* [PROVISIONAL] */
+  background: transparent;
+  color: var(--color-ink);
+  font-size: var(--text-meta);
+  cursor: pointer;
+}
+
+.calendar__day:hover {
+  outline: 1px solid var(--color-ink); /* [PROVISIONAL] COL-4 */
+}
+
+/* Range fill uses a square background and round endpoints, so a continuous
+   band reads as one range rather than a row of separate pills. */
+.calendar__day[data-in-range='true'] {
+  background: var(--color-surface-sunken); /* [PROVISIONAL] COL-4 */
+  border-radius: 0;
+}
+
+.calendar__day[data-selected='true'] {
+  background: var(--color-action); /* [PROVISIONAL] COL-4 */
+  color: var(--color-ink-inverse);
+}
+
+.calendar__footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: var(--space-block);
+}

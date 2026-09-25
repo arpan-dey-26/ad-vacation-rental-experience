@@ -1,0 +1,86 @@
+{
+  "cohost-sharath": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult man in his thirties, medium brown skin, short black hair, relaxed linen shirt. This is a wholly invented person, not a depiction of any real host or identifiable person. Friendly natural smile, head and shoulders centered with comfortable space for circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual professional guest-host profile style. Single portrait only, no collage, no text, no logos, no watermark.",
+    "path": "/images/avatars/cohost-sharath.webp",
+    "fictional": true
+  },
+  "cohost-aman": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult man in his forties, light brown skin, short wavy hair and subtle beard, navy casual shirt. This is a wholly invented person, not a depiction of any real host or identifiable person. Friendly natural smile, head and shoulders centered with comfortable space for circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual professional guest-host profile style. Single portrait only, no collage, no text, no logos, no watermark.",
+    "path": "/images/avatars/cohost-aman.webp",
+    "fictional": true
+  },
+  "cohost-maria": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult woman in her thirties, warm medium skin, shoulder length dark wavy hair, cream blouse. This is a wholly invented person, not a depiction of any real host or identifiable person. Friendly natural smile, head and shoulders centered with comfortable space for circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual professional guest-host profile style. Single portrait only, no collage, no text, no logos, no watermark.",
+    "path": "/images/avatars/cohost-maria.webp",
+    "fictional": true
+  },
+  "cohost-simran": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult woman in her twenties, medium brown skin, straight dark hair, muted blue blouse. This is a wholly invented person, not a depiction of any real host or identifiable person. Friendly natural smile, head and shoulders centered with comfortable space for circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual professional guest-host profile style. Single portrait only, no collage, no text, no logos, no watermark.",
+    "path": "/images/avatars/cohost-simran.webp",
+    "fictional": true
+  },
+  "cohost-pallavi": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult woman in her forties, brown skin, dark hair tied back, soft green blouse. This is a wholly invented person, not a depiction of any real host or identifiable person. Friendly natural smile, head and shoulders centered with comfortable space for circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual professional guest-host profile style. Single portrait only, no collage, no text, no logos, no watermark.",
+    "path": "/images/avatars/cohost-pallavi.webp",
+    "fictional": true
+  },
+  "cohost-sanyukta": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult woman in her thirties, light brown skin, short dark bob, rust blouse. This is a wholly invented person, not a depiction of any real host or identifiable person. Friendly natural smile, head and shoulders centered with comfortable space for circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual professional guest-host profile style. Single portrait only, no collage, no text, no logos, no watermark.",
+    "path": "/images/avatars/cohost-sanyukta.webp",
+    "fictional": true
+  },
+  "cohost-shruti": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult woman in her twenties, dark brown skin, long dark curly hair, beige casual top. This is a wholly invented person, not a depiction of any real host or identifiable person. Friendly natural smile, head and shoulders centered with comfortable space for circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual professional guest-host profile style. Single portrait only, no collage, no text, no logos, no watermark.",
+    "path": "/images/avatars/cohost-shruti.webp",
+    "fictional": true
+  },
+  "cohost-amisha": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult woman in her thirties, medium brown skin, shoulder length straight hair, muted rose blouse. This is a wholly invented person, not a depiction of any real host or identifiable person. Friendly natural smile, head and shoulders centered with comfortable space for circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual professional guest-host profile style. Single portrait only, no collage, no text, no logos, no watermark.",
+    "path": "/images/avatars/cohost-amisha.webp",
+    "fictional": true
+  },
+  "review-r1": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult man in his forties, medium brown skin, dark hair and neatly trimmed moustache, olive shirt. Entirely invented individual, no resemblance to a specific real person. Friendly relaxed smile, head and shoulders centered with space for a circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual vacation guest profile style. No collage, no text, no logo, no watermark.",
+    "path": "/images/avatars/review-r1.webp",
+    "fictional": true
+  },
+  "review-r2": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult man in his thirties, tan skin, short black hair, blue linen shirt. Entirely invented individual, no resemblance to a specific real person. Friendly relaxed smile, head and shoulders centered with space for a circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual vacation guest profile style. No collage, no text, no logo, no watermark.",
+    "path": "/images/avatars/review-r2.webp",
+    "fictional": true
+  },
+  "review-r3": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult woman in her thirties, brown skin, dark wavy hair, cream top. Entirely invented individual, no resemblance to a specific real person. Friendly relaxed smile, head and shoulders centered with space for a circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual vacation guest profile style. No collage, no text, no logo, no watermark.",
+    "path": "/images/avatars/review-r3.webp",
+    "fictional": true
+  },
+  "review-r4": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult man in his twenties, dark brown skin, curly black hair, light grey shirt. Entirely invented individual, no resemblance to a specific real person. Friendly relaxed smile, head and shoulders centered with space for a circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual vacation guest profile style. No collage, no text, no logo, no watermark.",
+    "path": "/images/avatars/review-r4.webp",
+    "fictional": true
+  },
+  "review-r5": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult man in his forties, light brown skin, black hair with slight grey temples, burgundy polo. Entirely invented individual, no resemblance to a specific real person. Friendly relaxed smile, head and shoulders centered with space for a circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual vacation guest profile style. No collage, no text, no logo, no watermark.",
+    "path": "/images/avatars/review-r5.webp",
+    "fictional": true
+  },
+  "review-r6": {
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Create ONE square original synthetic profile photograph of a fictional adult man in his thirties, medium brown skin, short black hair and tidy beard, dark green casual shirt. Entirely invented individual, no resemblance to a specific real person. Friendly relaxed smile, head and shoulders centered with space for a circular crop, softly blurred neutral light background, daylight, realistic skin texture, casual vacation guest profile style. No collage, no text, no logo, no watermark.",
+    "path": "/images/avatars/review-r6.webp",
+    "fictional": true
+  }
+}

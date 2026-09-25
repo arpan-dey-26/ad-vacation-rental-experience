@@ -1,0 +1,442 @@
+/* ============================================================================
+   Listing sections
+   ----------------------------------------------------------------------------
+   Structural geometry only. Where a value was measured it is marked MEASURED;
+   everything else uses a provisional token so Phase 3 calibrates centrally.
+   ========================================================================== */
+
+/* --- Title row ----------------------------------------------------------- */
+
+.listing-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-block);
+  padding-block: var(--space-block);
+}
+
+.listing-header__title {
+  margin: 0;
+  font-size: var(--text-display);
+  line-height: var(--text-display--line-height); /* MEASURED: 30px line box */
+  font-weight: var(--font-weight-semibold);
+}
+
+.listing-header__actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+/* MEASURED: 34px tall. Width is content-driven (Share 81.2, Save 75). */
+.text-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* [PROVISIONAL] */
+  height: var(--size-action-height);
+  padding-inline: 8px; /* [PROVISIONAL] */
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-ink);
+  font-size: var(--text-meta);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.text-action:hover {
+  text-decoration: underline;
+}
+
+/* --- Overview ------------------------------------------------------------ */
+
+.overview__capacity {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: var(--space-stack) 0 0;
+  padding: 0;
+  font-size: var(--text-body);
+}
+
+/* The separator is generated, not stored in the data — so a screen reader reads
+   four list items rather than one run-on string punctuated by dots. */
+.overview__capacity li + li::before {
+  content: '·';
+  margin-inline: 6px; /* [PROVISIONAL] */
+  color: var(--color-ink-subtle);
+}
+
+/* --- Highlights ---------------------------------------------------------- */
+/* MEASURED: icon 24px at the content edge, text starting 48px in. */
+
+.highlights {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-block);
+}
+
+.highlight {
+  display: grid;
+  grid-template-columns: var(--size-highlight-indent) 1fr;
+  align-items: start;
+}
+
+.highlight__icon {
+  width: var(--size-highlight-icon);
+  height: var(--size-highlight-icon);
+  color: var(--color-ink);
+}
+
+.highlight__title {
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-semibold);
+}
+
+.highlight__description {
+  margin: 0;
+  font-size: var(--text-meta);
+  color: var(--color-ink-muted);
+}
+
+/* --- Description --------------------------------------------------------- */
+
+.description__body {
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  white-space: pre-line;
+}
+
+/* TYPE-5: the reference's clamp line count is unmeasured. The control exists
+   and is measured (104.2 × 21); the clamp is not applied until we know it. */
+.description__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-block-start: var(--space-block);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* --- Sleeping arrangements ----------------------------------------------- */
+/* MEASURED: cards 318 wide, image 212 tall, 16px gap (109.5 + 318 + 16 = 443.5). */
+
+/* Flex rather than `grid-auto-flow: column`: a column-flow grid container
+   reports a max-content intrinsic width that escapes its own overflow clip in
+   Chromium, which pushes the whole document sideways. Flex items with a fixed
+   basis clip predictably. The geometry harness caught this. */
+/* `contain: paint` is load-bearing, not decoration. Without it these scrollers
+   leak their scroll extent into the initial containing block and the whole
+   window gains ~730px of horizontal scroll, even though nothing is visible
+   outside the viewport and `overflow-x: auto` is clipping correctly. Paint
+   containment stops the propagation — and is the right call for a scroller
+   anyway. Verified both ways by scripts/verify-geometry. */
+.sleeping {
+  display: flex;
+  gap: var(--size-sleep-gap);
+  overflow-x: auto;
+  contain: paint;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  scroll-snap-type: x proximity;
+}
+
+.sleeping > * {
+  flex: 0 0 var(--size-sleep-card);
+  scroll-snap-align: start;
+}
+
+.sleeping__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack);
+}
+
+.sleeping__image {
+  width: 100%;
+  height: var(--size-sleep-card-image);
+  object-fit: cover;
+  border-radius: var(--radius-md); /* [PROVISIONAL] */
+  background: var(--color-surface-sunken);
+}
+
+/* --- Amenities ----------------------------------------------------------- */
+
+.amenities__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* [PROVISIONAL] SEC-6 column count */
+  gap: var(--space-block);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.amenity {
+  display: grid;
+  grid-template-columns: var(--size-highlight-indent) 1fr;
+  align-items: center;
+  font-size: var(--text-body);
+}
+
+.amenity--unavailable {
+  color: var(--color-ink-subtle);
+  text-decoration: line-through;
+}
+
+/* MEASURED: 208.2 × 49 ("Show all 50 amenities"), 190 × 49 ("Show all 19
+   reviews"). Width is content-driven; the 49px height is the measured value. */
+.pill-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--size-pill-height);
+  padding-inline: 23px; /* [PROVISIONAL] */
+  border: 1px solid var(--color-ink); /* [PROVISIONAL] COL-4 */
+  border-radius: var(--radius-sm); /* [PROVISIONAL] */
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+/* --- Reviews ------------------------------------------------------------- */
+
+.reviews__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-block);
+}
+
+.reviews__breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* [PROVISIONAL] SEC-7 */
+  gap: var(--space-block);
+  list-style: none;
+  margin: var(--space-block) 0;
+  padding: 0;
+}
+
+.reviews__breakdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-meta);
+}
+
+/* MEASURED: the tag row is a horizontal scroller — its children extend past the
+   content edge to x 1635 at a 1339px viewport. */
+.reviews__tags {
+  display: flex;
+  gap: var(--space-stack);
+  overflow-x: auto;
+  contain: paint;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: none;
+}
+
+.reviews__tags::-webkit-scrollbar {
+  display: none;
+}
+
+.review-tag {
+  display: inline-flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  justify-content: center;
+  height: 48px; /* MEASURED */
+  padding-inline: 16px; /* [PROVISIONAL] */
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--text-meta);
+}
+
+.reviews__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* [PROVISIONAL] SEC-7 */
+  column-gap: var(--size-column-gap);
+  row-gap: var(--space-section);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.review__author {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* [PROVISIONAL] */
+}
+
+.review__avatar {
+  width: var(--size-avatar);
+  height: var(--size-avatar);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-semibold);
+}
+
+.review__body {
+  margin: var(--space-block) 0 0;
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+}
+
+/* --- Location ------------------------------------------------------------ */
+/* SEC-8: the reference's map is INTERACTIVE (Search / Zoom in / Zoom out were
+   measured). SEC-8b — provider, tiles and coordinates — is unmeasured and is a
+   scope decision, so no map library is introduced here. This is the sized,
+   labelled placeholder that a map mounts into. */
+
+.location__map {
+  height: 480px; /* [PROVISIONAL] SEC-8b */
+  border-radius: var(--radius-md); /* [PROVISIONAL] */
+  background: var(--color-surface-sunken);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-subtle);
+  font-size: var(--text-meta);
+}
+
+/* --- Host ---------------------------------------------------------------- */
+
+.host__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-block);
+}
+
+.host__avatar {
+  width: 64px; /* [PROVISIONAL] SEC-9 — host avatar size not captured */
+  height: 64px; /* [PROVISIONAL] SEC-9 */
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+  background: var(--color-surface-sunken);
+}
+
+.host__stats {
+  display: flex;
+  gap: var(--space-section);
+  list-style: none;
+  margin: var(--space-block) 0 0;
+  padding: 0;
+}
+
+.host__cohosts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-stack);
+  list-style: none;
+  margin: var(--space-stack) 0 0;
+  padding: 0;
+  font-size: var(--text-meta);
+  color: var(--color-ink-muted);
+}
+
+/* --- Things to know ------------------------------------------------------ */
+/* MEASURED: 3 columns of 352 with a 32px gap (3 × 352 + 2 × 32 = 1120). */
+
+.policies {
+  display: grid;
+  grid-template-columns: repeat(3, var(--size-policy-column));
+  gap: var(--size-policy-gap);
+}
+
+.policy__list {
+  list-style: none;
+  margin: 0 0 var(--space-block);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack);
+  font-size: var(--text-meta);
+}
+
+/* --- Similar stays ------------------------------------------------------- */
+
+.similar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.similar__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-stack);
+}
+
+/* MEASURED: 32 × 32. */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-carousel-arrow);
+  height: var(--size-carousel-arrow);
+  border: 1px solid var(--color-line); /* [PROVISIONAL] */
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.icon-button[disabled] {
+  opacity: 0.35; /* [PROVISIONAL] */
+  cursor: default;
+}
+
+/* Same reason as .sleeping — see the note there. */
+.similar__track {
+  display: flex;
+  gap: var(--space-block);
+  overflow-x: auto;
+  contain: paint;
+  list-style: none;
+  margin: var(--space-block) 0 0;
+  padding: 0;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+
+.similar__track > * {
+  flex: 0 0 calc((100% - 3 * var(--space-block)) / 4);
+  scroll-snap-align: start;
+}
+
+.similar__track::-webkit-scrollbar {
+  display: none;
+}
+
+.similar__card-media {
+  aspect-ratio: 20 / 19; /* [PROVISIONAL] */
+  border-radius: var(--radius-md); /* [PROVISIONAL] */
+  background: var(--color-surface-sunken);
+}
+
+/* PROVISIONAL: supplied fictional avatars fit within the existing text row. */
+.host__cohost-avatar {
+  display: inline-block;
+  width: 20px; /* PROVISIONAL: existing co-host text line height */
+  height: 20px; /* PROVISIONAL: existing co-host text line height */
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+  margin-right: 4px; /* PROVISIONAL: avatar-to-name separation */
+}

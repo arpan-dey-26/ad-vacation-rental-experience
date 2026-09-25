@@ -1,0 +1,19 @@
+{
+  "config": {
+    // Docs are wrapped at ~80 by hand, but tables and diagrams legitimately
+    // exceed it — enforcing a hard limit there would mean worse tables.
+    "MD013": false,
+    // Long docs repeat sub-headings under different sections.
+    "MD024": { "siblings_only": true }
+  },
+  "globs": ["**/*.md"],
+  "ignores": [
+    "node_modules/**",
+    ".next/**",
+    // Agent and skill configs are prompt documents with YAML frontmatter, not
+    // prose documents; heading and emphasis rules do not apply to them.
+    ".claude/**",
+    // Verbatim prompt transcripts are reproduced exactly and never reformatted.
+    "docs/prompts/**"
+  ]
+}

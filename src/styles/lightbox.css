@@ -1,0 +1,117 @@
+/* ============================================================================
+   Lightbox
+   ----------------------------------------------------------------------------
+   MEASURED across captures C (1339), E, F and G (2005):
+
+     image   1100 wide at BOTH widths and for BOTH source aspects —
+             1100 × 617.2 from a 1440 × 808 source, 1100 × 825 from a
+             1440 × 1080 one. So the width is a fixed cap and the height is the
+             source's own. Centred on both axes: at 1339 the image spans
+             119.5…1219.5 (centre 669.5 = 1339 / 2) and sits at y 339.4 in a
+             1296-tall viewport (centre 648 = 1296 / 2).
+     arrows  40 × 40 at x 20 and at vw − 60, y 628 — centre 648, the viewport's
+     exits   "Show all photos" 40 × 40 at (16, 16);
+             "Close" 40 × 40 at y 16 with its right edge at vw − 24
+     ends    Next is `disabled` at photo 43; both enabled at 25, 28 and 40
+
+   Backdrop colour and opacity, radii, the focus ring and the photo-to-photo
+   transition were never captured and use provisional tokens (LIGHT-1, LIGHT-4).
+   ========================================================================== */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  /* Above the tour, which stays mounted and scrolled underneath. */
+  z-index: var(--z-overlay-controls);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--color-surface-overlay); /* [PROVISIONAL] LIGHT-1 */
+  opacity: var(--opacity-viewer-backdrop); /* [PROVISIONAL] LIGHT-1 */
+}
+
+.lightbox__figure {
+  position: relative;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightbox__image {
+  /* MEASURED: 1100 fixed. `height: auto` lets the source aspect set the height,
+     which is what reproduces 617.2 and 825 from the same rule. */
+  width: var(--size-lightbox-image);
+  height: auto;
+  /* Neither bound was measured — no captured photo is tall or narrow enough to
+     reach them. They exist so an unusually shaped source cannot overflow the
+     viewport; for every photo in this listing they never bind, so the measured
+     geometry is unaffected. The browser rescales proportionally, so the aspect
+     ratio survives either clamp. */
+  max-width: 100vw; /* [PROVISIONAL] */
+  max-height: 100vh; /* [PROVISIONAL] */
+  object-fit: contain;
+  /* LIGHT-4 is unmeasured, so there is no photo-to-photo transition. The image
+     is keyed by photo id, so stepping swaps the element outright. */
+}
+
+.lightbox__caption {
+  position: absolute;
+  /* Unmeasured — the probe recorded the text ("Exterior", "28 of 43") but not
+     its box. Bottom-centre is a convention, not an observation. */
+  bottom: calc(-1 * var(--space-section)); /* [PROVISIONAL] LIGHT-6 */
+  display: flex;
+  gap: var(--space-block); /* MEASURED token, unmeasured use [PROVISIONAL] */
+  align-items: baseline;
+  font-size: var(--text-meta); /* [PROVISIONAL] */
+  color: var(--color-surface); /* [PROVISIONAL] — reads on the dark backdrop */
+}
+
+.lightbox__category {
+  font-weight: var(--font-weight-semibold); /* [PROVISIONAL] */
+}
+
+/* --- Controls ------------------------------------------------------------- */
+/* All four are viewport-anchored, so they are positioned against the fixed
+   layer rather than against the image — which is what the captures show: the
+   arrows hold y 628 whether the photo is 617.2 or 825 tall. */
+
+.lightbox__nav,
+.lightbox__exit {
+  position: absolute;
+  width: var(--size-control); /* MEASURED: 40 × 40 */
+  height: var(--size-control);
+}
+
+.lightbox__nav {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lightbox__nav--previous {
+  left: var(--size-lightbox-arrow-inset); /* MEASURED: 20 */
+}
+
+.lightbox__nav--next {
+  right: var(--size-lightbox-arrow-inset); /* MEASURED: 20 */
+}
+
+.lightbox__exit {
+  top: var(--size-lightbox-exit-inset); /* MEASURED: 16 */
+}
+
+.lightbox__exit--tour {
+  left: var(--size-lightbox-exit-inset); /* MEASURED: 16 */
+}
+
+/* MEASURED: 24, not 16. Close's right edge sits at vw − 24 at both captured
+   widths, where "Show all photos" is inset 16 on the left. The asymmetry is
+   the reference's, and is reproduced rather than tidied up. */
+.lightbox__exit--close {
+  right: var(--size-lightbox-close-inset); /* MEASURED: 24 */
+}

@@ -1,0 +1,113 @@
+/* ============================================================================
+   Site chrome — header and the secondary section nav
+   ========================================================================== */
+
+/* --- Header -------------------------------------------------------------- */
+/* MEASURED: 89px tall (88 + a 1px hairline), full-bleed, inner row capped at
+   1760 with 80px padding.
+
+   NOT STICKY. Measured directly: the header's document y stays 0 at scrollY 0
+   and at scrollY 300, so it scrolls away with the page. This is the opposite of
+   the usual assumption for a listing layout, which is exactly why it is called
+   out here — do not add `position: sticky` to this rule. */
+
+.site-header {
+  height: var(--size-header);
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-surface);
+  /* position: static — deliberate. See above. */
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  gap: var(--space-block);
+}
+
+.site-header__brand {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  text-decoration: none;
+  color: var(--color-brand);
+}
+
+.site-header__search {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-stack);
+  flex: 0 0 auto;
+}
+
+/* --- Secondary section nav ----------------------------------------------- */
+/* MEASURED: 67px tall, uses the same 1280 shell and 80px gutter as the content,
+   and is viewport-pinned — its viewport y stayed at −66 at both scrollY 0 and
+   scrollY 300, i.e. parked just above the top edge and not yet revealed.
+
+   So the reveal threshold is above 300px, and the exact value and the easing
+   are NOT measured (LAY-5c). Rather than invent a timing, this parks the bar
+   with a transform and leaves the transition duration on a provisional token;
+   `data-revealed` is toggled by useSectionNav at a threshold that is itself
+   marked provisional in that hook. */
+
+.section-nav {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: var(--size-subnav);
+  z-index: var(--z-header);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-line);
+  transform: translateY(-100%);
+  transition: transform var(--duration-medium) var(--ease-standard);
+  will-change: transform;
+}
+
+.section-nav[data-revealed='true'] {
+  transform: translateY(0);
+}
+
+.section-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.section-nav__links {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-block);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.section-nav__link {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  text-decoration: none;
+  color: var(--color-ink);
+  font-size: var(--text-meta);
+  border-bottom: 2px solid transparent;
+}
+
+.section-nav__link:hover {
+  border-bottom-color: var(--color-ink);
+}
+
+.section-nav__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-block);
+}
